@@ -22,13 +22,20 @@ io = sio.listen(server);
 // set socket.io debugging
 io.set('log level', 1);
 
-
-
-
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) =>{
     console.log('New user connected');
+    
+    socket.emit('newEmail', {
+        from: 'Mike@example.com',
+        text: 'Hey. Whats is going on?',
+        createAt: 123
+    });
+    
+socket.on('createEmail', (newEmail) => {
+    console.log('createEmail', newEmail);
+});    
     
 socket.on   ('disconnect', () => {
     console.log('User was disconnected');
