@@ -27,14 +27,14 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) =>{
     console.log('New user connected');
     
-   socket.emit('newMessage', {
-       from: 'John'
-       test: 'See you then',
-       createdAt: 123123,
-   });
-    
+
 socket.on('createMessage', (message) => {
     console.log('createMessage', message);
+    io.emit('newmessage',, {
+        from: message, from,
+        test: message.text,
+        createAt: new Date().getTime()
+    });
 });
     
 socket.on   ('disconnect', () => {
