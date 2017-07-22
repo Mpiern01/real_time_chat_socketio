@@ -4,6 +4,8 @@ const express = require('express');
 const publicPath = path.join(__dirname, '../public');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
+
 //Local, Dev, or Prod Deploy
 //const port = process.env.PORT || 3000;
 // Cloud9IDE testing and preview
@@ -27,17 +29,10 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) =>{
     console.log('New user connected');
     
- socket.emit('newMessage', {
-     from: 'Admin',
-     text: 'Welcome to the chat app',
-     createdAt: new Date().getTime()
- });
+ socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
  
-  socket.broadcast.emit('newMessage', {
-      from:'Admin',
-      text: 'New user joined',
-      createdAt: new Date().getTime()
-  });
+ socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined'));
 
 
 
@@ -50,11 +45,7 @@ socket.on('createMessage', (message) => {
      //   test: message.text,
      //   createAt: new Date().getTime()
     //});
-    socket.broadcast.emit('newMessage',{
-          from: message. from,
-          test: message.text,
-          createAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage',generateMessage(message.from, message.text));
    
 });
     
