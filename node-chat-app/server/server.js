@@ -48,6 +48,9 @@ socket.on('createMessage', (message, callback) => {
     socket.broadcast.emit('newMessage',generateMessage(message.from, message.text));
    callback('This is from the server.');
 });
+    socket.on('createLocationMessage', (coords) => {
+        in.emit('newMessage', generateMessage('Admin', ${coords.latitude}, $(coords.longitude));
+    });
     
 socket.on   ('disconnect', () => {
     console.log('User was disconnected');
