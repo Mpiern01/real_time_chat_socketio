@@ -20,5 +20,9 @@
 # Task 15 = Autoscrolling
 # Task 16 = Add a Join Page
 # Task 17 = Passing Room Data
-# Task 18 = Validation Tests
+# Task 18 = Validation 
+# Task 19 = Socket.io Rooms
+# Task 20 = Users Part 1 - Tests
+# Task 21 = Users Part 2 - test resolutions
+# Task 22 = 
 
