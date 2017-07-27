@@ -1,72 +1,73 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
-const publicPath = path.join(__dirname, '../public');
 const socketIO = require('socket.io');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
-//Local, Dev, or Prod Deploy
-//const port = process.env.PORT || 3000;
-// Cloud9IDE testing and preview
-const port = process.env.PORT || process.env.IP;
-
+const publicPath = path.join(__dirname, '../public');
+const port = process.env.PORT || 3000;
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
-// module dependencies
-var http = require("http"),
-    sio  = require("socket.io")
-    // create http server
-var server = http.createServer().listen(process.env.PORT, process.env.IP),
-// create socket server
-io = sio.listen(server);
-// set socket.io debugging
-io.set('log level', 1);
+var users = new Users();
 
 app.use(express.static(publicPath));
 
-io.on('connection', (socket) =>{
-    console.log('New user connected');
-    
- socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+io.on('connection', (socket) => {
+  console.log('New user connected');
 
- 
- socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined'));
+  socket.on('join', (params, callback) => {
+    if (!isRealString(params.name) || !isRealString(params.room)) {
+      return callback('Name and room name are required.');
+    }
 
+    socket.join(params.room);
+    users.removeUser(socket.id);
+    users.addUser(socket.id, params.name, params.room);
 
+    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined.`));
+    callback();
+  });
 
+  socket.on('createMessage', (message, callback) => {
+    var user = users.getUser(socket.id);
 
+    if (user && isRealString(message.text)) {
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+    }
 
-socket.on('createMessage', (message, callback) => {
-    console.log('createMessage', message);
-    //io.emit('newmessage',, {
-     //   from: message. from,
-     //   test: message.text,
-     //   createAt: new Date().getTime()
-    //});
-    socket.broadcast.emit('newMessage',generateMessage(message.from, message.text));
-   callback('This is from the server.');
+    callback();
+  });
+
+  socket.on('createLocationMessage', (coords) => {
+    var user = users.getUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));  
+    }
+  });
+
+  socket.on('disconnect', () => {
+    var user = users.removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left.`));
+    }
+  });
 });
-    socket.on('createLocationMessage', (coords) => {
-        in.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
-    });
-    
-socket.on   ('disconnect', () => {
-    console.log('User was disconnected');
-}); 
+
+server.listen(port, () => {
+  console.log(`Server is up on ${port}`);
 });
 
-
-
-
-
-
-//server.listen(port, () =>{
-//    consol.log('Server is up on port ${port}')
+// Cloud9IDE listener
+//server.listen(process.env.PORT, process.env.IP, function(){
+// console.log("Server is up on Cloud9IDE");
 //});
-
-server.listen(process.env.PORT, process.env.IP, function(){
- console.log("Server is up on Cloud9IDE");
-});
 
