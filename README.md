@@ -17,3 +17,8 @@
 # Task 12 = Adding Timestamps
 # Task 13 = Printing Timestamps
 # Task 14 = Adding Mustashe.js
+# Task 15 = Autoscrolling
+# Task 16 = Add a Join Page
+# Task 17 = Passing Room Data
+# Task 18 = Validation Tests
+
