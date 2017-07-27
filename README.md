@@ -1,5 +1,6 @@
 # real_time_chat_socketio 
 # with ES6
+# bdd tests with mocha
 (*Note) Developed on Cloud9IDE and Local Atom using Circle CI Pushing to Heroku.
 (**Note) When looking at port listeners Cloud9 uses process.env.PORT, process.env.IP vs your own local port so I commented these out
 
