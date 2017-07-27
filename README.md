@@ -14,3 +14,6 @@
 # Task 9  = Geolocation Part 1
 # Task 10 = Geolocation Part 2
 # Task 11 = Style Chat App
+# Task 12 = Adding Timestamps
+# Task 13 = Printing Timestamps
+# Task 14 = Adding Mustashe.js
