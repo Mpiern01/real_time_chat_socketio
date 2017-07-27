@@ -13,3 +13,4 @@
 # Task 8  = add a Jquery form
 # Task 9  = Geolocation Part 1
 # Task 10 = Geolocation Part 2
+# Task 11 = Style Chat App
